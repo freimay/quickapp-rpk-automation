@@ -3,9 +3,12 @@ import time
 
 # ================= 坐标与参数配置区 =================
 # 1. 业务参数配置
-PACKAGE_NAME = "com.zhizhibz.home" 
-LAUNCH_PARAMS = "/pages/Action?intent=2&IS_PREVIEW=1&TACTIC_TYPE=1&channelId=zll&TACTIC_ID=112&linkId=0112"
-DEBUGGER_MAIN = "org.hapjs.debugger/org.hapjs.debugger.MainActivity"
+# 此处输入包名
+PACKAGE_NAME = "com.jieyuan.home" 
+# 此处输入启动参数
+LAUNCH_PARAMS = "/pages/Action?intent=2&IS_PREVIEW=1&TACTIC_TYPE=1&channelId=zll&TACTIC_ID=112&linkId=0204"
+# 重新安装调试后，终端运行 adb shell dumpsys window | findstr mCurrentFocus 命令，拿到数据替换下面内容
+DEBUGGER_MAIN = "org.hapjs.debugger/org.hapjs.debugger.HybridMainActivity"
 FORBIDDEN_LOG = "开始上报" # 提审包断言关键词 
 
 # 2. 物理坐标配置 (请在此填入您手动定位的 X Y 数值)
@@ -63,11 +66,25 @@ def start_pure_coordinate_workflow():
     run_adb(f"adb shell input tap {POS_INPUT_FIELD[0]} {POS_INPUT_FIELD[1]}") # 获取焦点
     time.sleep(1.2) # 等待键盘弹出
     
-    # 【收起键盘操作】确保不挡住保存按钮
+    print("🧹 正在强制执行离散退格清空...")
+    # 循环 80-100 次，根据你参数的长度决定
+    for _ in range(160):
+        # 每一条命令都是独立的 adb 进程，确保系统必须响应
+        run_adb("adb shell input keyevent 67")
+        # 如果还是太快，可以取消下面这一行的注释
+        # time.sleep(0.01) 
+    # -------------------------------------
+
+    # 【收起键盘操作】
     run_adb(f"adb shell input tap {POS_HIDE_KEYBOARD[0]} {POS_HIDE_KEYBOARD[1]}")
-    print("⏳ 等待 5 秒布局恢复...")
-    time.sleep(5) 
-    
+    print("⏳ 等待 3 秒布局恢复...")
+    time.sleep(3)    
+
+    # # 【收起键盘操作】确保不挡住保存按钮
+    # run_adb(f"adb shell input tap {POS_HIDE_KEYBOARD[0]} {POS_HIDE_KEYBOARD[1]}")
+    # print("⏳ 等待 5 秒布局恢复...")
+    # time.sleep(5)    
+
     input_text_fast(LAUNCH_PARAMS)
     time.sleep(1.5)
 
