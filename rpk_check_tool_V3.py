@@ -102,10 +102,20 @@ def start_pure_coordinate_workflow():
     run_adb(f"adb shell am start -n {DEBUGGER_MAIN}")
     time.sleep(1.5)
 
-    # 第七步：点击开始调试
-    print(f"[7/7] 点击‘开始调试’ {POS_START_DEBUG_BTN}...")
-    run_adb(f"adb shell input tap {POS_START_DEBUG_BTN[0]} {POS_START_DEBUG_BTN[1]}")
-
+    # 第七步：执行本地安装逻辑
+    print(f"[7/8] 开始本地安装 RPK...")
+    # 1. 点击本地安装图标
+    run_adb(f"adb shell input tap {POS_LOCAL_INSTALL_BTN[0]} {POS_LOCAL_INSTALL_BTN[1]}")
+    time.sleep(2.0)
+    # 2. 点击文件管理/选择器
+    run_adb(f"adb shell input tap {POS_FIRST_FILE_ITEM[0]} {POS_FIRST_FILE_ITEM[1]}")
+    time.sleep(1.5)
+    # 3. 点击内部存储
+    run_adb(f"adb shell input tap {POS_INNER_ONE[0]} {POS_INNER_ONE[1]}")
+    time.sleep(1.0)
+    # 4. 点击目标文件夹 (张驰文件夹)
+    run_adb(f"adb shell input tap {POS_INNER_TWO[0]} {POS_INNER_TWO[1]}")
+    time.sleep(1.0)
     # --- 后续：日志断言验证  ---
     print("\n🔍 正在进入市场模式合规性监测 (10秒)...")
     time.sleep(10)
